@@ -1,12 +1,11 @@
 const validateLogin = (req, res, next) => {
-  const {
-    email,
-    password,
-  } = req.body;
+  const doesEmailExist = req.body.email !== undefined
+    && req.body.email !== null;
 
-  const isLoginValid = email !== undefined && password !== undefined;
+  const doesPasswordExist = req.body.password !== undefined
+    && req.body.email !== null;
 
-  if (!isLoginValid) {
+  if (!doesEmailExist || !doesPasswordExist) {
     return res.status(400).json({
       message: 'Some required fields are missing',
     });
