@@ -7,10 +7,15 @@ const UserModel = (sequelize, DataTypes) => {
     image: DataTypes.STRING,
   },
   {
-    timestamps: false,
     tableName: 'users',
     underscored: true,
   })
+
+  User.associate = (models) => {
+    User.belongsToMany(models.BlogPost, {
+      foreignKey: 'user_id', as: 'blog_posts'
+    })
+  }
 
   return User;
 }
