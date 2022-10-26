@@ -1,11 +1,14 @@
-const validateLogin = (req, res, next) => {
-  const doesEmailExist = req.body.email !== undefined
-    && req.body.email !== null;
+const validateLogin = async (req, res, next) => {
+  const {
+    email,
+    password,
+  } = req.body;
 
-  const doesPasswordExist = req.body.password !== undefined
-    && req.body.email !== null;
+  const isReqBodyObjectFiled = (reqBodyObject) => reqBodyObject !== undefined
+    && reqBodyObject !== ''
+    && reqBodyObject !== null;
 
-  if (!doesEmailExist || !doesPasswordExist) {
+  if (!isReqBodyObjectFiled(email) || !isReqBodyObjectFiled(password)) {
     return res.status(400).json({
       message: 'Some required fields are missing',
     });
