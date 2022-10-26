@@ -25,7 +25,22 @@ const validateEmail = (req, res, next) => {
   next();
 };
 
+const validatePasswordLength = (req, res, next) => {
+  const { password } = req.body;
+
+  const MIN_PASSWORD_LENGTH = 6;
+
+  if (password.length < MIN_PASSWORD_LENGTH) {
+    return res.status(400).json({
+      message: '"password" length must be at least 6 characters long',
+    });
+  }
+
+  next();
+};
+
 module.exports = {
   validateDisplayNameLength,
   validateEmail,
+  validatePasswordLength,
 };
