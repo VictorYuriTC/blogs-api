@@ -1,16 +1,15 @@
-const loginModel = require('../models/User');
+const { User } = require('../models');
 
-const findUserByEmail = async (userEmail) => {
-  const user = await loginModel.findOne({ where: { userEmail } });
+const findUserByEmail = async (email) => {
+  const user = await User.findOne({ where: { email } });
 
-  const userExist = () => user !== undefined
-    && user !== null
-    && user !== '';
+  const userExist = () => user !== null;
 
   if (!userExist) {
-    const error = { message: 'Invalid fields' };
-    throw new Error(error);
+    return { status: 400, message: 'Invalid fields' };
   }
+
+  return { status: 200, message: 'Found' };
 };
 
 module.exports = {

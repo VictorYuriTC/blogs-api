@@ -1,16 +1,18 @@
 const loginService = require('../services/login.service');
 
 const findUserByEmail = async (req, res) => {
-  try {
-    const {
-      user,
-      status,
-    } = await loginService.findUserByEmail();
- 
-    return res.status(status).json({ user });
-  } catch ({ message }) {
-    return res.status(400).json({ message });
-  }
+  const {
+    email,
+  } = req.body;
+
+  const userData = await loginService.findUserByEmail(email);
+
+  const {
+    status,
+    message,
+  } = userData;
+
+  res.status(status).json({ message });
 };
 
 module.exports = {
