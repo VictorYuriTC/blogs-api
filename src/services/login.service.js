@@ -1,5 +1,5 @@
 const { User } = require('../models');
-const { generateNewJWT } = require('../middlewares/authentications/generateJWT'); 
+const generateNewJWT = require('../middlewares/authentications/generateJWT'); 
 
 const verifyEmailMatchesPassword = async (email, password) => {
   const user = await User.findOne({ where: { email, password } });

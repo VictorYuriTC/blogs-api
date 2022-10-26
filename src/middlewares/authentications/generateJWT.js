@@ -17,6 +17,4 @@ const generateNewJWT = (data) => {
   return token;
 };
 
-module.exports = {
-  generateNewJWT,
-};
+module.exports = generateNewJWT;
