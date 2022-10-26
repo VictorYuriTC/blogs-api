@@ -1,8 +1,7 @@
-const LoginModel = require('../models/User');
+const loginModel = require('../models/User');
 
-const findUserByEmail = async (req, res) => {
-  const { email } = req.body;
-  const user = await LoginModel.findOne({ where: { email } });
+const findUserByEmail = async (userEmail) => {
+  const user = await loginModel.findOne({ where: { userEmail } });
 
   const userExist = () => user !== undefined
     && user !== null
