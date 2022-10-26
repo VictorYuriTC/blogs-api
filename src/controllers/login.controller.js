@@ -6,7 +6,6 @@ const findUserByEmail = async (req, res) => {
   } = req.body;
 
   const userData = await loginService.findUserByEmail(email);
-
   const {
     status,
     message,

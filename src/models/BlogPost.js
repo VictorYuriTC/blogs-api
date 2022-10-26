@@ -13,6 +13,7 @@ const BlogPostModel = (sequelize, DataTypes) => {
     updated: DataTypes.DATE
   },
   {
+    timestamps: false,
     tableName: 'users',
     underscored: true,
   })
