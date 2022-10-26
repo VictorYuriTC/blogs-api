@@ -1,29 +1,26 @@
-const jwt = require('jsonwebtoken');
 const { User } = require('../models');
+const { generateNewJWT } = require('../middlewares/authentications/generateJWT');
 
-const secret = process.env.JWT_SECRET;
-
-const verifyNewEmailIsNotOnDatabase = async (email) => {
+const addNewUserByEmail = async ({ email, displayName, password }) => {
   const user = await User.findOne({ where: { email } });
 
-  if (user) {
+  const doesUserExist = user !== undefined
+    && user !== null
+    && user !== '';
+
+  if (doesUserExist) {
     return { status: 409, message: 'User already registered' };
   }
 
-  const jwtConfig = {
-    expiresIn: '15d',
-    algorithm: 'HS256',
-  };
+  const newUser = await User.create({
+    email, displayName, password,
+  });
 
-  const token = jwt.sign(
-    { email },
-    secret,
-    jwtConfig,
-  );
+  const token = generateNewJWT(email);
 
-  return { status: 201, message: 'User successfully registered', token };
+  return { status: 201, message: 'User successfully registered', token, newUser };
 };
 
 module.exports = {
-  verifyNewEmailIsNotOnDatabase,
+  addNewUserByEmail,
 };
