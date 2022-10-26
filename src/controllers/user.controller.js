@@ -16,6 +16,16 @@ const addNewUserByEmail = async (req, res) => {
   return res.status(status).json({ token, user });
 };
 
+const getAllUsers = async (req, res) => {
+  const {
+    status,
+    allUsers,
+  } = await userService.getAllUsers();
+
+  return res.status(status).json(allUsers);
+};
+
 module.exports = {
   addNewUserByEmail,
+  getAllUsers,
 };

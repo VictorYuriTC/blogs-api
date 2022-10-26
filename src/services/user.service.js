@@ -21,6 +21,12 @@ const addNewUserByEmail = async ({ email, displayName, password }) => {
   return { status: 201, message: 'User successfully registered', token, newUser };
 };
 
+const getAllUsers = async () => {
+  const allUsers = await User.findAll();
+  return { status: 200, message: 'All users found', allUsers };
+};
+
 module.exports = {
   addNewUserByEmail,
+  getAllUsers,
 };
