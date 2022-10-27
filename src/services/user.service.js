@@ -1,6 +1,11 @@
 const { User } = require('../models');
 const generateNewJWT = require('../middlewares/authentications/generateJWT');
 
+const findUserByEmail = async (email) => {
+  const user = await User.findOne({ where: { email } });
+  return user;
+};
+
 const addNewUserByEmail = async ({ email, displayName, password }) => {
   const user = await User.findOne({ where: { email } });
 
@@ -16,7 +21,7 @@ const addNewUserByEmail = async ({ email, displayName, password }) => {
     email, displayName, password,
   });
 
-  const token = generateNewJWT(email);
+  const token = generateNewJWT({ email, displayName, password });
 
   return { status: 201, message: 'User successfully registered', token, newUser };
 };
@@ -29,4 +34,5 @@ const getAllUsers = async () => {
 module.exports = {
   addNewUserByEmail,
   getAllUsers,
+  findUserByEmail,
 };
