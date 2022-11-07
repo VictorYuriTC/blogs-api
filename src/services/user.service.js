@@ -34,8 +34,20 @@ const getAllUsers = async () => {
   return { status: 200, message: 'All users found', allUsers };
 };
 
+const getUserById = async (id) => {
+  const userWithPassword = await User.findByPk(id);
+
+  if (!userWithPassword) {
+    return { status: 404, message: 'User does not exist' };
+  }
+
+  const user = { ...userWithPassword.dataValues, password: undefined };
+  return { status: 200, message: 'User found', user };
+};
+
 module.exports = {
   addNewUserByEmail,
   getAllUsers,
   findUserByEmail,
+  getUserById,
 };
