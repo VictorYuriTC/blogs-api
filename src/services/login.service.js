@@ -12,7 +12,7 @@ const verifyEmailMatchesPassword = async (email, password) => {
     return { status: 400, message: 'Invalid fields' };
   }
 
-  const token = generateNewJWT(email);
+  const token = generateNewJWT({ email });
 
   return { status: 200, message: 'Valid fields', token };
 };

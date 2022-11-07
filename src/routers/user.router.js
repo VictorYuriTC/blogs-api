@@ -13,9 +13,10 @@ router.post(
   userController.addNewUserByEmail,
 );
 
+router.use(validateJWT);
+
 router.get(
   '/',
-  validateJWT,
   userController.getAllUsers,
 );
 
