@@ -27,7 +27,10 @@ const addNewUserByEmail = async ({ email, displayName, password }) => {
 };
 
 const getAllUsers = async () => {
-  const allUsers = await User.findAll();
+  const allUsersWithPasswords = await User.findAll();
+  const allUsers = allUsersWithPasswords
+    .map((user) => ({ ...user.dataValues, password: undefined }));
+  console.log(allUsers);
   return { status: 200, message: 'All users found', allUsers };
 };
 
