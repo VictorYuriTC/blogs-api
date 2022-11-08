@@ -30,7 +30,6 @@ const getAllUsers = async () => {
   const allUsersWithPasswords = await User.findAll();
   const allUsers = allUsersWithPasswords
     .map((user) => ({ ...user.dataValues, password: undefined }));
-  console.log(allUsers);
   return { status: 200, message: 'All users found', allUsers };
 };
 

@@ -21,7 +21,8 @@ const PostCategoryModel = (sequelize, DataTypes) => {
       as: 'categories',
       through: PostCategory,
       foreignKey: 'categoryId',
-      otherKey: 'postId'
+      otherKey: 'postId',
+      onDelete: 'cascade'
     })
   }
 

@@ -14,7 +14,7 @@ const BlogPostModel = (sequelize, DataTypes) => {
   },
   {
     timestamps: false,
-    tableName: 'users',
+    tableName: 'blog_posts',
     underscored: true,
   })
 
@@ -22,6 +22,7 @@ const BlogPostModel = (sequelize, DataTypes) => {
     BlogPost.belongsTo(models.User, {
       foreignKey: 'userId',
       as: 'users',
+      onDelete: 'cascade'
     })
   }
 
