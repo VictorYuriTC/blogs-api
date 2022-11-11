@@ -1,5 +1,6 @@
 const postService = require('../services/post.service');
 const userService = require('../services/user.service');
+const categoriesService = require('../services/categories.service');
 
 const getAllPosts = async (req, res) => {
   const {
@@ -7,15 +8,23 @@ const getAllPosts = async (req, res) => {
     allPosts,
   } = await postService.getAllPosts();
 
+  const { allCategories } = (await categoriesService.getAllCategories());
+
   const allPostsPromises = allPosts
-    .map(async (post) => ({
-        ...post.dataValues,
-        user: (await userService.getUserById(post.userId)).user,
-      }));
+    .map(async (post) => {
+      const { user } = await userService.getUserById(post.userId);
+        return {
+          ...post.dataValues,
+          user,
+          categories: allCategories,
+        };
+      });
 
-  const allPostsWithUsers = await Promise.all(allPostsPromises);
+  const allPostsWithUsersAndCategories = await Promise.all(allPostsPromises);
 
-  return res.status(status).json(allPostsWithUsers);
+  console.log(allPostsWithUsersAndCategories);
+
+  return res.status(status).json(allPostsWithUsersAndCategories);
 };
 
 const getPostById = async (req, res) => {
@@ -42,8 +51,6 @@ const getPostById = async (req, res) => {
 
 const deletePostById = async (req, res) => {
   const { id } = req.params;
-  const { authorization } = req.headers;
-  console.log(`It's all here: ${req.headers.authorization}`);
 
   const {
     status,
