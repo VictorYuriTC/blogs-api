@@ -54,18 +54,20 @@ const getPostById = async (req, res, _next) => {
 
 const deletePostById = async (req, res, _next) => {
   const { id } = req.params;
+  const { authorization } = req.headers;
+  const { email } = jwt.decode(authorization).data;
 
   const {
     status,
     message,
     deletedPost,
-  } = await postService.deletePostById(id);
+  } = await postService.deletePostById({ id, email });
 
   if (!deletedPost) {
     return res.status(status).json({ message });
   }
 
-  return res.status(status);
+  return res.status(status).json();
 };
 
 const searchPostByContent = async (req, res, _next) => {

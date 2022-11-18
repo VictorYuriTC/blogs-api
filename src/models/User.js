@@ -21,6 +21,8 @@ const UserModel = (sequelize, DataTypes) => {
     User.hasMany(models.BlogPost, {
       foreignKey: 'userId',
       as: 'blog_posts',
+      onDelete: 'cascade',
+      onUpdate: 'cascade'
     })
   }
 

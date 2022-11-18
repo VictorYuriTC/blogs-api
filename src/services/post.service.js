@@ -18,13 +18,20 @@ const getPostById = async (postId) => {
   return { status: 200, message: 'Post found', post };
 };
 
-const deletePostById = async (postId) => {
-  const { post } = await getPostById(postId);
-
+const deletePostById = async (dataToBeDeleted) => {
+  const { post } = await getPostById(dataToBeDeleted.id);
+  
   if (!post) {
     return { status: 404, message: 'Post does not exist' };
   }
-  const deletedPost = BlogPost.destroy({ where: { id: postId } });
+
+  const userToBeChecked = await User.findOne({ where: { id: post.dataValues.userId } });
+
+  if (userToBeChecked.email !== dataToBeDeleted.email) {
+    return { status: 401, message: 'Unauthorized user' };
+  }
+
+  const deletedPost = BlogPost.destroy({ where: { id: dataToBeDeleted.id } });
 
   return { status: 204, message: 'Post successfully deleted', deletedPost };
 };
