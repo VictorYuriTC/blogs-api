@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const userService = require('../services/user.service');
 
 const addNewUserByEmail = async (req, res) => {
@@ -40,8 +41,16 @@ const getUserById = async (req, res) => {
   return res.status(status).json(user);
 };
 
+const deleteLoggedUserByEmailOnToken = async (req, res, _next) => {
+  const { email } = jwt.decode(req.headers.authorization).data;
+  const { status } = await userService.deleteLoggedUserByEmailOnToken(email);
+
+  return res.status(status).json();
+};
+
 module.exports = {
   addNewUserByEmail,
   getAllUsers,
   getUserById,
+  deleteLoggedUserByEmailOnToken,
 };

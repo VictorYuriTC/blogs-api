@@ -25,4 +25,6 @@ router.get(
   userController.getUserById,
 );
 
+router.delete('/me', userController.deleteLoggedUserByEmailOnToken);
+
 module.exports = router;

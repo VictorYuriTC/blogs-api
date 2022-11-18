@@ -44,9 +44,17 @@ const getUserById = async (id) => {
   return { status: 200, message: 'User found', user };
 };
 
+const deleteLoggedUserByEmailOnToken = async (email) => {
+  const loggedUserData = await User.findOne({ where: { email } });
+  await User.destroy({ where: { id: loggedUserData.dataValues.id } });
+  console.log('Deleted userId: ', loggedUserData.dataValues.id);
+  return { status: 204 };
+};
+
 module.exports = {
   addNewUserByEmail,
   getAllUsers,
   findUserByEmail,
   getUserById,
+  deleteLoggedUserByEmailOnToken,
 };
