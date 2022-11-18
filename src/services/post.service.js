@@ -30,7 +30,7 @@ const deletePostById = async (postId) => {
 };
 
 const searchPostByContent = async (postContent) => {
-  const [postData] = await BlogPost.findAll({
+  const postData = await BlogPost.findAll({
     where: {
       content: { [Op.like]: postContent },
     },

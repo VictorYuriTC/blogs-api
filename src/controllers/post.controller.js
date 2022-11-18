@@ -45,6 +45,8 @@ const getPostById = async (req, res, _next) => {
     ...post.dataValues,
     user,
   };
+  
+  console.log(fullPost);
 
   return res.status(status).json(fullPost);
 };
@@ -77,10 +79,14 @@ const searchPostByContent = async (req, res, _next) => {
   if (!postData) {
     return res.status(status).json({ message });
   }
+  
+  const post = postData;
+  const { user } = await userService.getUserById(1);
 
-  console.log(postData.dataValues);
+  const fullPost = { post, user };
+  console.log(fullPost);
 
-  return res.status(status).json(postData.dataValues);
+  return res.status(status).json(fullPost);
 };
 
 module.exports = {
