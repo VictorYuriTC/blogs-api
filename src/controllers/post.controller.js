@@ -115,10 +115,20 @@ const updatePostByTitleAndContentAndIdAndUserEmail = async (req, res, _next) => 
   return res.status(status).json(fullUpdatedPost);
 };
 
+const addNewPostByTitleAndContentAndCategoryIds = async (req, res, _next) => {
+  const {
+    status,
+    message,
+  } = await postService.addNewPostByTitleAndContentAndCategoryIds(req.body);
+
+  return res.status(status).json({ message });
+};
+
 module.exports = {
   getAllPosts,
   getPostById,
   deletePostById,
   searchPostByContent,
   updatePostByTitleAndContentAndIdAndUserEmail,
+  addNewPostByTitleAndContentAndCategoryIds,
 };

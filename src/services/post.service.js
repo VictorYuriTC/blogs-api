@@ -71,10 +71,25 @@ if (!dataToBeUpdated.title || !dataToBeUpdated.content || !dataToBeUpdated.id) {
   return { status: 200, wasPostUpdated };
 };
 
+const addNewPostByTitleAndContentAndCategoryIds = async (dateToBeUpdated) => {
+  const { title, content, categoryIds } = dateToBeUpdated;
+
+  if (!title || !content || !categoryIds) {
+    return { status: 400, message: 'Some required fields are missing' };
+  }
+
+  if (categoryIds.length === 0) {
+    return { status: 400, message: 'one or more "categoryIds" not found' };
+  }
+
+  return { status: 200 };
+};
+
 module.exports = {
   getAllPosts,
   getPostById,
   deletePostById,
   searchPostByContent,
   updatePostByTitleAndContentAndIdAndUserEmail,
+  addNewPostByTitleAndContentAndCategoryIds,
 };
