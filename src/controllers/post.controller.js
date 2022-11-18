@@ -88,9 +88,34 @@ const searchPostByContent = async (req, res, _next) => {
   return res.status(status).json(fullPost);
 };
 
+const updatePostByTitleContentAndId = async (req, res, _next) => {
+  const { id } = req.params;
+  const dataToBeUpdated = { ...req.body, id };
+
+  const { status, message, wasPostUpdated } = await postService
+    .updatePostByTitleContentAndId(dataToBeUpdated);
+
+  if (!wasPostUpdated) return res.status(status).json({ message });
+  
+  const { post } = await postService.getPostById(id);
+  const updatedPost = post.dataValues;
+
+  const { user } = await userService.getUserById(updatedPost.userId);
+
+  const { allCategories } = await categoriesService.getAllCategories();
+
+  console.log('Post was successfully updated: ', wasPostUpdated);
+  
+  const fullUpdatedPost = { ...updatedPost, user, categories: [allCategories[0].dataValues] };
+  console.log('Here\' our new post', fullUpdatedPost);
+
+  return res.status(status).json(fullUpdatedPost);
+};
+
 module.exports = {
   getAllPosts,
   getPostById,
   deletePostById,
   searchPostByContent,
+  updatePostByTitleContentAndId,
 };

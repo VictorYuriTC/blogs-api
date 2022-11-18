@@ -43,9 +43,32 @@ const searchPostByContent = async (postContent) => {
   return { status: 200, postData };
 };
 
+const updatePostByTitleContentAndId = async (dataToBeUpdated) => {
+if (!dataToBeUpdated.title || !dataToBeUpdated.content || !dataToBeUpdated.id) {
+    return {
+      status: 400,
+      message: 'Some required fields are missing',
+      wasPostUpdated: 0,
+    };
+  }
+
+  const [wasPostUpdated] = await BlogPost.update(
+    {
+      title: dataToBeUpdated.title,
+      content: dataToBeUpdated.content,
+    },
+    {
+      where: { id: dataToBeUpdated.id },
+    },
+  );
+
+  return { status: 200, wasPostUpdated };
+};
+
 module.exports = {
   getAllPosts,
   getPostById,
   deletePostById,
   searchPostByContent,
+  updatePostByTitleContentAndId,
 };
