@@ -72,17 +72,24 @@ if (!dataToBeUpdated.title || !dataToBeUpdated.content || !dataToBeUpdated.id) {
 };
 
 const addNewPostByTitleAndContentAndCategoryIds = async (dateToBeUpdated) => {
-  const { title, content, categoryIds } = dateToBeUpdated;
-
+  const { title, content, categoryIds, email } = dateToBeUpdated;
+  const loggedUser = await User.findOne({ where: { email } });
+  console.log('User ID is here!!!!!!', loggedUser.dataValues.id);
   if (!title || !content || !categoryIds) {
     return { status: 400, message: 'Some required fields are missing' };
   }
-
+  
   if (categoryIds.length === 0) {
     return { status: 400, message: 'one or more "categoryIds" not found' };
   }
+  const addedPostData = await BlogPost.create({ 
+    title,
+    content,
+    userId: loggedUser.dataValues.id,
+    categoryIds,
+  });
 
-  return { status: 200 };
+  return { status: 201, addedPost: addedPostData.dataValues };
 };
 
 module.exports = {

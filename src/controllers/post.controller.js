@@ -116,12 +116,17 @@ const updatePostByTitleAndContentAndIdAndUserEmail = async (req, res, _next) => 
 };
 
 const addNewPostByTitleAndContentAndCategoryIds = async (req, res, _next) => {
+  const { email } = jwt.decode(req.headers.authorization).data;
+  console.log('Logged user: ', email);
   const {
     status,
     message,
-  } = await postService.addNewPostByTitleAndContentAndCategoryIds(req.body);
+    addedPost,
+  } = await postService.addNewPostByTitleAndContentAndCategoryIds({ ...req.body, email });
 
-  return res.status(status).json({ message });
+  if (!addedPost) return res.status(status).json({ message });
+
+  return res.status(status).json(addedPost);
 };
 
 module.exports = {
