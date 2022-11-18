@@ -1,4 +1,4 @@
-const { BlogPost, User, Sequelize, PostCategory } = require('../models');
+const { BlogPost, User, Sequelize, PostCategory, Category } = require('../models');
 
 const { Op } = Sequelize;
 
@@ -74,23 +74,24 @@ if (!dataToBeUpdated.title || !dataToBeUpdated.content || !dataToBeUpdated.id) {
 const addNewPostByTitleAndContentAndCategoryIds = async (dateToBeUpdated) => {
   const { title, content, categoryIds, email } = dateToBeUpdated;
   const loggedUser = await User.findOne({ where: { email } });
-
+  const doAllCategoriesExistPromise = categoryIds.map((category) => Category
+    .findOne({ where: { id: category } }));
+  const doAllCategoriesExist = await Promise.all(doAllCategoriesExistPromise);
+  if (!doAllCategoriesExist.every((category) => !!category
+    || categoryIds.length === 0)) {
+    return { status: 400, message: 'one or more "categoryIds" not found' };
+  }
   if (!title || !content || !categoryIds) {
     return { status: 400, message: 'Some required fields are missing' };
   }
-  
-  if (categoryIds.length === 0) {
-    return { status: 400, message: 'one or more "categoryIds" not found' };
-  }
+
   const addedPostData = await BlogPost
     .create({ title, content, userId: loggedUser.dataValues.id, categoryIds });
-  console.log('Added post data can be found here: ', addedPostData);
 
   const categoriesToBeAddedPromise = categoryIds.map((category) => PostCategory
     .create({ postId: addedPostData.id, categoryId: category }));
 
-  const addedCategories = await Promise.all(categoriesToBeAddedPromise);
-  console.log('Here are the addedCategories', addedCategories);
+  await Promise.all(categoriesToBeAddedPromise);
 
   return { status: 201, addedPost: addedPostData.dataValues };
 };
