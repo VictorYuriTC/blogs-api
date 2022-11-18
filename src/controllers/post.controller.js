@@ -29,25 +29,24 @@ const getAllPosts = async (req, res, _next) => {
 
 const getPostById = async (req, res, _next) => {
   const { id } = req.params;
-  const {
-    status,
-    message,
-    post,
-  } = await postService.getPostById(id);
+  const { status, message, post } = await postService.getPostById(id);
 
   if (!post) {
     return res.status(status).json({ message });
   }
-
   const { user } = await userService.getUserById(post.userId);
+  const { allCategories } = await categoriesService.getAllCategories();
+
+  const categories = allCategories.map(({ dataValues }) => dataValues);
 
   const fullPost = {
     ...post.dataValues,
     user,
+    categories,
   };
-  
-  console.log(fullPost);
 
+  console.log(fullPost);
+  
   return res.status(status).json(fullPost);
 };
 
