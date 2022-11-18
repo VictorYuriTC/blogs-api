@@ -1,4 +1,6 @@
-const { BlogPost } = require('../models');
+const { BlogPost, Sequelize } = require('../models');
+
+const { Op } = Sequelize;
 
 const getAllPosts = async () => {
   const allPosts = await BlogPost.findAll();
@@ -27,8 +29,23 @@ const deletePostById = async (postId) => {
   return { status: 204, message: 'Post successfully deleted', deletedPost };
 };
 
+const searchPostByContent = async (postContent) => {
+  const [postData] = await BlogPost.findAll({
+    where: {
+      content: { [Op.like]: postContent },
+    },
+  });
+
+  if (!postData) {
+    return { status: 404, message: 'Post does not exist' };
+  }
+
+  return { status: 200, postData };
+};
+
 module.exports = {
   getAllPosts,
   getPostById,
   deletePostById,
+  searchPostByContent,
 };

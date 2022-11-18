@@ -2,7 +2,7 @@ const postService = require('../services/post.service');
 const userService = require('../services/user.service');
 const categoriesService = require('../services/categories.service');
 
-const getAllPosts = async (req, res) => {
+const getAllPosts = async (req, res, _next) => {
   const {
     status,
     allPosts,
@@ -27,7 +27,7 @@ const getAllPosts = async (req, res) => {
   return res.status(status).json(allPostsWithUsersAndCategories);
 };
 
-const getPostById = async (req, res) => {
+const getPostById = async (req, res, _next) => {
   const { id } = req.params;
   const {
     status,
@@ -49,7 +49,7 @@ const getPostById = async (req, res) => {
   return res.status(status).json(fullPost);
 };
 
-const deletePostById = async (req, res) => {
+const deletePostById = async (req, res, _next) => {
   const { id } = req.params;
 
   const {
@@ -65,8 +65,27 @@ const deletePostById = async (req, res) => {
   return res.status(status);
 };
 
+const searchPostByContent = async (req, res, _next) => {
+  const { q } = req.query;
+
+  const {
+    status,
+    message,
+    postData,
+  } = await postService.searchPostByContent(q);
+
+  if (!postData) {
+    return res.status(status).json({ message });
+  }
+
+  console.log(postData.dataValues);
+
+  return res.status(status).json(postData.dataValues);
+};
+
 module.exports = {
   getAllPosts,
   getPostById,
   deletePostById,
+  searchPostByContent,
 };
