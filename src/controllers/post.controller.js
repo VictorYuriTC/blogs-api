@@ -1,6 +1,8 @@
+const jwt = require('jsonwebtoken');
 const postService = require('../services/post.service');
 const userService = require('../services/user.service');
 const categoriesService = require('../services/categories.service');
+require('dotenv');
 
 const getAllPosts = async (req, res, _next) => {
   const {
@@ -88,12 +90,14 @@ const searchPostByContent = async (req, res, _next) => {
   return res.status(status).json(fullPost);
 };
 
-const updatePostByTitleContentAndId = async (req, res, _next) => {
+const updatePostByTitleAndContentAndIdAndUserEmail = async (req, res, _next) => {
   const { id } = req.params;
-  const dataToBeUpdated = { ...req.body, id };
-
+  const { authorization } = req.headers;
+  const { email } = jwt.decode(authorization).data;
+  const dataToBeUpdated = { ...req.body, id, email };
+  
   const { status, message, wasPostUpdated } = await postService
-    .updatePostByTitleContentAndId(dataToBeUpdated);
+    .updatePostByTitleAndContentAndIdAndUserEmail(dataToBeUpdated);
 
   if (!wasPostUpdated) return res.status(status).json({ message });
   
@@ -103,11 +107,8 @@ const updatePostByTitleContentAndId = async (req, res, _next) => {
   const { user } = await userService.getUserById(updatedPost.userId);
 
   const { allCategories } = await categoriesService.getAllCategories();
-
-  console.log('Post was successfully updated: ', wasPostUpdated);
   
   const fullUpdatedPost = { ...updatedPost, user, categories: [allCategories[0].dataValues] };
-  console.log('Here\' our new post', fullUpdatedPost);
 
   return res.status(status).json(fullUpdatedPost);
 };
@@ -117,5 +118,5 @@ module.exports = {
   getPostById,
   deletePostById,
   searchPostByContent,
-  updatePostByTitleContentAndId,
+  updatePostByTitleAndContentAndIdAndUserEmail,
 };

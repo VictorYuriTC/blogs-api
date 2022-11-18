@@ -1,4 +1,4 @@
-const { BlogPost, Sequelize } = require('../models');
+const { BlogPost, User, Sequelize } = require('../models');
 
 const { Op } = Sequelize;
 
@@ -43,23 +43,22 @@ const searchPostByContent = async (postContent) => {
   return { status: 200, postData };
 };
 
-const updatePostByTitleContentAndId = async (dataToBeUpdated) => {
+const updatePostByTitleAndContentAndIdAndUserEmail = async (dataToBeUpdated) => {
 if (!dataToBeUpdated.title || !dataToBeUpdated.content || !dataToBeUpdated.id) {
-    return {
-      status: 400,
-      message: 'Some required fields are missing',
-      wasPostUpdated: 0,
-    };
+    return { status: 400, message: 'Some required fields are missing', wasPostUpdated: 0 };
+  }
+
+  const { post: { userId } } = await getPostById(dataToBeUpdated.id); 
+
+  const userToBeChecked = await User.findOne({ where: { id: userId } });
+
+  if (userToBeChecked.dataValues.email !== dataToBeUpdated.email) {
+    return { status: 401, message: 'Unauthorized user', wasPostUpdated: 0 };
   }
 
   const [wasPostUpdated] = await BlogPost.update(
-    {
-      title: dataToBeUpdated.title,
-      content: dataToBeUpdated.content,
-    },
-    {
-      where: { id: dataToBeUpdated.id },
-    },
+    { title: dataToBeUpdated.title, content: dataToBeUpdated.content },
+    { where: { id: dataToBeUpdated.id } },
   );
 
   return { status: 200, wasPostUpdated };
@@ -70,5 +69,5 @@ module.exports = {
   getPostById,
   deletePostById,
   searchPostByContent,
-  updatePostByTitleContentAndId,
+  updatePostByTitleAndContentAndIdAndUserEmail,
 };
